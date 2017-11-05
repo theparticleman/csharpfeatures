@@ -105,7 +105,7 @@ namespace Tests
     class PatternMatching
     {
       //Pattern matching in C# isn't as robust as something like F# 
-      //or Scala yet, but they are getting there.
+      //or Scala yet, but it's getting there
       [Test]
       public void OutVariables()
       {
