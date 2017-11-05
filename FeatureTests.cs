@@ -52,7 +52,10 @@ namespace Tests
     public void MoreExpressionBodies()
     {
       var example = new ExpressionBodyExample("foo");
-      Assert.That(example, Is.Not.Null);
+      Assert.That(example.Value, Is.EqualTo("foo"));
+
+      example.Value = null;
+      Assert.That(example.Value, Is.EqualTo("Default value"));
     }
 
     class ExpressionBodyExample
@@ -62,7 +65,7 @@ namespace Tests
 
       ~ExpressionBodyExample() => Console.WriteLine("You probably shouldn't use a finalizer");
 
-      public string ValueTuple
+      public string Value
       {
         get => stringValue;
         set => stringValue = value ?? "Default value";
