@@ -29,7 +29,8 @@ namespace Tests
       Assert.That(intValue, Is.EqualTo(0));
 
       //But now you can do this
-      //Visual Studio Code isn't so keen on this, but full Visual Studio and the compiler both think it's totally legit
+      //Visual Studio Code isn't so keen on this, but full Visual Studio 
+      //and the compiler both think it's totally legit
       int anotherIntValue = default;
       Assert.That(anotherIntValue, Is.EqualTo(0));
 
