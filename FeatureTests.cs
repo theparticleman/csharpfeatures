@@ -225,7 +225,8 @@ namespace Tests
         var stringVal = "foo";
 
         var tuple = (intVal, stringVal);
-        //Visual Studio Code is a little doubtful about the validity of this, but full Visual Studio and the compiler are both okay with it
+        //Visual Studio Code is a little doubtful about the validity of this, 
+        //but full Visual Studio and the compiler are both okay with it
         Assert.That(tuple.intVal, Is.EqualTo(42));
         Assert.That(tuple.stringVal, Is.EqualTo("foo"));
       }
