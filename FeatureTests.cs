@@ -48,6 +48,27 @@ namespace Tests
   public class CSharp7Features
   {
     [Test]
+    public void MoreExpressionBodies()
+    {
+      var example = new ExpressionBodyExample("foo");
+      Assert.That(example, Is.Not.Null);
+    }
+
+    class ExpressionBodyExample
+    {
+      private string stringValue;
+      public ExpressionBodyExample(string value) => this.stringValue = value;
+
+      ~ExpressionBodyExample() => Console.WriteLine("You probably shouldn't use a finalizer");
+
+      public string ValueTuple
+      {
+        get => stringValue;
+        set => stringValue = value ?? "Default value";
+      }
+    }
+
+    [Test]
     public void NumericLiterals()
     {
       //Binary literals were added
@@ -184,6 +205,11 @@ namespace Tests
         var coolTuple = (42, "foo");
         Assert.That(coolTuple.Item1, Is.EqualTo(42));
         Assert.That(coolTuple.Item2, Is.EqualTo("foo"));
+
+        //The code above is the same as this
+        var coolishTuple = ValueTuple.Create(42, "foo");
+        Assert.That(coolishTuple.Item1, Is.EqualTo(42));
+        Assert.That(coolishTuple.Item2, Is.EqualTo("foo"));
 
         //Or we can be even cooler
         var coolerTuple = (intVal: 42, stringVal: "foo");
