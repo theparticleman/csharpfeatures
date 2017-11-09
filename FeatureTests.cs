@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace Tests
 {
-  //Visual Studio Code isn't super keen on some C# 7.1 features
+  //Until recently Visual Studio Code didn't like some 7.1 features
   public class CSharp71Features
   {
 
@@ -29,8 +29,6 @@ namespace Tests
       Assert.That(intValue, Is.EqualTo(0));
 
       //But now you can do this
-      //Visual Studio Code isn't so keen on this, but full Visual Studio 
-      //and the compiler both think it's totally legit
       int anotherIntValue = default;
       Assert.That(anotherIntValue, Is.EqualTo(0));
 
@@ -229,8 +227,6 @@ namespace Tests
         var stringVal = "foo";
 
         var tuple = (intVal, stringVal);
-        //Visual Studio Code is a little doubtful about the validity of this, 
-        //but full Visual Studio and the compiler are both okay with it
         Assert.That(tuple.intVal, Is.EqualTo(42));
         Assert.That(tuple.stringVal, Is.EqualTo("foo"));
       }
