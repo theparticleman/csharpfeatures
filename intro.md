@@ -1,6 +1,8 @@
 # C# 7 and 7.1 Features
 ## Jonathan Turner
 
+![Sponsor Slide](https://drive.google.com/uc?id=1MU_D9axc87fXHaDU1ere_Qk6XU4_B3hr)
+
 * jonathan.m.turner@gmail.com
 * Software craftsman at Pluralsight
 * Utah Software Craftsmanship meetup
