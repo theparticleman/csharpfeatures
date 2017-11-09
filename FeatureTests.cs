@@ -193,7 +193,7 @@ namespace Tests
       //These new tuples are compiler syntactic sugar around System.ValueTuple
       //.NET Core 2.0 supports new tuples
       //.NET Framework 4.7 supports new tuples
-      //Earlier .NET Framework version support new tuples, but you need VS 2017 and to add a nuget reference to System.ValueTuple
+      //Earlier .NET Framework versions support new tuples, but you need VS 2017 and to add a nuget reference to System.ValueTuple
 
       [Test]
       public void BasicExample()
