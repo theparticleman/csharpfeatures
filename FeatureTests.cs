@@ -7,22 +7,19 @@ namespace Tests
   public class CSharp71Features
   {
 
-    [Test]
-    public void Enabling71Features()
+    [Test] public void Enabling71Features()
     {
       //In .NET Core 2.0 you need to add a node to your .csproj file
 
       //In Visual Studio you can change your project properties or modify your project file manually
     }
 
-    [Test]
-    public void AsyncMain()
+    [Test] public void AsyncMain()
     {
       //You can have async Main() methods now
     }
 
-    [Test]
-    public void DefaultLiteralExpressions()
+    [Test] public void DefaultLiteralExpressions()
     {
       //You used to have to do this
       int intValue = default(int);
@@ -37,8 +34,7 @@ namespace Tests
       Assert.That(func, Is.EqualTo(default(Func<int, string>)));
     }
 
-    [Test]
-    public void InferredTupleElementNames()
+    [Test] public void InferredTupleElementNames()
     {
       //We'll talk about this when we talk about tuples
     }
@@ -46,8 +42,7 @@ namespace Tests
 
   public class CSharp7Features
   {
-    [Test]
-    public void MoreExpressionBodies()
+    [Test] public void MoreExpressionBodies()
     {
       var example = new ExpressionBodyExample("foo");
       Assert.That(example.Value, Is.EqualTo("foo"));
@@ -70,8 +65,7 @@ namespace Tests
       }
     }
 
-    [Test]
-    public void NumericLiterals()
+    [Test] public void NumericLiterals()
     {
       //Binary literals were added
       var binaryValue = 0b0100;
@@ -83,8 +77,7 @@ namespace Tests
       Assert.That(oneBillion, Is.EqualTo(1000000000));
     }
 
-    [Test]
-    public void LocalFunctions()
+    [Test] public void LocalFunctions()
     {
       var evenNumber = 42;
       Assert.That(IsEven(evenNumber), Is.True);
@@ -104,8 +97,7 @@ namespace Tests
     {
       //Pattern matching in C# isn't as robust as something like F# 
       //or Scala yet, but it's getting there
-      [Test]
-      public void OutVariables()
+      [Test] public void OutVariables()
       {
         //Before C# 7, you had to do out variables like this
         var valueToParse = "42";
@@ -125,8 +117,7 @@ namespace Tests
         Assert.That(result, Is.EqualTo(result2));
       }
 
-      [Test]
-      public void IfExpressionPatterns()
+      [Test] public void IfExpressionPatterns()
       {
         object input = "42";
 
@@ -157,8 +148,7 @@ namespace Tests
         }
       }
 
-      [Test]
-      public void SwitchExpressions()
+      [Test] public void SwitchExpressions()
       {
         for (int i = 0; i < 1000; i++)
         {
@@ -195,8 +185,7 @@ namespace Tests
       //.NET Framework 4.7 supports new tuples
       //Earlier .NET Framework versions support new tuples, but you need VS 2017 and to add a nuget reference to System.ValueTuple
 
-      [Test]
-      public void BasicExample()
+      [Test] public void BasicExample()
       {
         //We used to have to do this like savages
         var oldSchoolTuple = Tuple.Create(42, "foo");
@@ -219,8 +208,7 @@ namespace Tests
         Assert.That(coolerTuple.stringVal, Is.EqualTo("foo"));
       }
 
-      [Test]
-      public void InferredElementNames()
+      [Test] public void InferredElementNames()
       {
         //This is a C# 7.1 feature
         var intVal = 42;
@@ -231,8 +219,7 @@ namespace Tests
         Assert.That(tuple.stringVal, Is.EqualTo("foo"));
       }
 
-      [Test]
-      public void AsReturnTypes()
+      [Test] public void AsReturnTypes()
       {
         var tuple = ReturnTuple();
         Assert.That(tuple.Item1, Is.EqualTo(42));
@@ -248,8 +235,7 @@ namespace Tests
         (int intVal, string stringVal) ReturnTupleWithNamedElements() => (42, "foo");
       }
 
-      [Test]
-      public void Equality()
+      [Test] public void Equality()
       {
         var tuple1 = (42, "foo");
         var tuple2 = (42, "foo");
@@ -259,8 +245,7 @@ namespace Tests
         // Assert.That(tuple1 == tuple2, Is.True); //The == operator isn't defined for new tuples :(
       }
 
-      [Test]
-      public void Deconstructors()
+      [Test] public void Deconstructors()
       {
         //Not to be confused with destructors
         var tuple = (42, "foo");
@@ -272,8 +257,7 @@ namespace Tests
         //You can also implement deconstrutors in your own types
       }
 
-      [Test]
-      public void Discards()
+      [Test] public void Discards()
       {
         //You probably shouldn't use tuples with lots of values very often, but when you do...
         var superHugeTuple = (42, "foo", 4.5, "Arthur Dent", "Life, The Universe, and Everything");
