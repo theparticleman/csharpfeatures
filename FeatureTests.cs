@@ -25,6 +25,25 @@ namespace Tests
       //Leading underscores on other numerical literals are not allowed
       //var intLiteral = _1_000_000;
     }    
+
+    [Test] public void NontrailingNamedArguments()
+    {
+        //All of these were valid before C# 7.2
+        TestMethod(1, 2, 3);
+        TestMethod(arg1: 1, arg2: 2, arg3: 3);
+        TestMethod(arg2: 2, arg3: 3, arg1: 1);
+        TestMethod(1, 2, arg3: 3);
+        TestMethod(1, arg2: 2, arg3: 3);
+
+        //C# 7.2 adds the ability to use named parameters like this:
+        //(Currently Visual Studio Code reports these as errors, but they compile successfully
+        TestMethod(1, arg2: 2, 3);
+        TestMethod(arg1: 1, 2, 3);
+
+        //TestMethod(arg2: 2, 1, 3);  //This is still invalid
+    }
+
+    private void TestMethod(int arg1, int arg2, int arg3) { }
   }
 
   public class CSharp71Features
