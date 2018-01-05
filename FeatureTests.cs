@@ -3,17 +3,32 @@ using NUnit.Framework;
 
 namespace Tests
 {
-  //Until recently Visual Studio Code didn't like some 7.1 features
-  public class CSharp71Features
+  public class CSharp72Features
   {
-
-    [Test] public void Enabling71Features()
+    [Test] public void Enabling71and72Features()
     {
       //In .NET Core 2.0 you need to add a node to your .csproj file
 
       //In Visual Studio you can change your project properties or modify your project file manually
     }
 
+    [Test] public void LeadingUnderscoresInNumericLiterals()
+    {
+      //C# 7 added support for underscores as digit separators, but you could start a numeric literal with an underscore
+      var binaryLiteral = 0b_1000_0000; //Currently Visual Studio Code reports this as an error, but it compiles successfully
+      Assert.That(binaryLiteral, Is.EqualTo(128));
+
+      //Leading underscores are valid for binary and hex literals only
+      var hexLiteral = 0x_2a;
+      Assert.That(hexLiteral, Is.EqualTo(42));
+
+      //Leading underscores on other numerical literals are not allowed
+      //var intLiteral = _1_000_000;
+    }    
+  }
+
+  public class CSharp71Features
+  {
     [Test] public void AsyncMain()
     {
       //You can have async Main() methods now
