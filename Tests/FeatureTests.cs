@@ -209,7 +209,7 @@ namespace Tests
           }
         }
         Assert.That(i, Is.EqualTo(42));
-        //If input isn't an int or isn't as string that is parseable as an int then i will equal 0
+        //If input isn't an int or isn't a string that is parseable as an int then i will equal 0
 
         //Now we can have something much more elegant
         if (input is int x || input is string s && int.TryParse(s, out x))
