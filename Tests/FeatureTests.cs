@@ -13,6 +13,20 @@ namespace Tests
       //In Visual Studio you can change your project properties or modify your project file manually
     }
 
+    [Test] public void ReferenceSemanticsWithValueTypes()
+    {
+      //C# 7.2 added several features for dealing value types (often structs) as reference types
+      //This is useful if you are passing value types around a lot and want to avoid copying memory
+      //You can read more here https://docs.microsoft.com/en-us/dotnet/csharp/reference-semantics-with-value-types
+
+      //Add the "in" keyword: similar to ref and out, but the value cannot be modified
+      //Add "ref readonly" returns: returns a value type by reference, but does not allow modifications to it
+      //Add "readonly struct" type: used to create immutable structs that have some performance advantages when used with "in" and "ref readonly"
+      //Add "ref struct" type: a value type that must be stack allocated
+        //The primary motivation for "ref struct" was Span<T> and related structures 
+        //See https://channel9.msdn.com/Events/Connect/2017/T125 for an explanation of Span<T>
+    }
+
     [Test] public void LeadingUnderscoresInNumericLiterals()
     {
       //C# 7 added support for underscores as digit separators, but you could start a numeric literal with an underscore
