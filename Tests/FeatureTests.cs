@@ -30,7 +30,7 @@ namespace Tests
     [Test] public void LeadingUnderscoresInNumericLiterals()
     {
       //C# 7 added support for underscores as digit separators, but you could start a numeric literal with an underscore
-      var binaryLiteral = 0b_1000_0000; //Currently Visual Studio Code reports this as an error, but it compiles successfully
+      var binaryLiteral = 0b_1000_0000;
       Assert.That(binaryLiteral, Is.EqualTo(128));
 
       //Leading underscores are valid for binary and hex literals only
@@ -51,7 +51,6 @@ namespace Tests
         TestMethod(1, arg2: 2, arg3: 3);
 
         //C# 7.2 adds the ability to use named parameters like this:
-        //(Currently Visual Studio Code reports these as errors, but they compile successfully
         TestMethod(1, arg2: 2, 3);
         TestMethod(arg1: 1, 2, 3);
 
