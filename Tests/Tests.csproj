@@ -18,4 +18,8 @@
     <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="2.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ReferencedAssembly\ReferencedAssembly.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,5 +1,6 @@
 using System;
 using NUnit.Framework;
+using ReferencedAssembly;
 
 namespace Tests
 {
@@ -41,6 +42,30 @@ namespace Tests
         TestMethod(arg1: 1, 2, 3);
 
         //TestMethod(arg2: 2, 1, 3);  //This is still invalid
+    }
+
+    class ProtectedPrivateExample
+    {
+      //Protected private is similar to protected internal
+      //Unfortunately, all the documentation seems to use the terms "protected internal" and "private protected" making the connection less clear
+      [Test] public void ProtectedPrivateTest()
+      {
+        var childInSameAssembly = new ChildClassInSameAssembly();
+        var childInDifferentAssembly = new ChildClassInDifferentAssembly();
+        var nonChildInSameAssembly = new NonChildClassInSameAssembly();
+        
+        Assert.That(childInSameAssembly.Calculate(), Is.EqualTo(3));
+        Assert.That(childInDifferentAssembly.Calculate(), Is.EqualTo(2));
+        Assert.That(nonChildInSameAssembly.Calculate(), Is.EqualTo(1));
+      }
+
+      public class ChildClassInDifferentAssembly: ProtectedPrivateBaseClass
+      {
+        public int Calculate()
+        {
+          return protectedInternalValue + protectedValue;
+        }
+      }
     }
 
     private void TestMethod(int arg1, int arg2, int arg3) { }
