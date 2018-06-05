@@ -29,7 +29,7 @@ namespace Tests
 
     [Test] public void LeadingUnderscoresInNumericLiterals()
     {
-      //C# 7 added support for underscores as digit separators, but you could start a numeric literal with an underscore
+      //C# 7 added support for underscores as digit separators, but you couldn't start a numeric literal with an underscore
       var binaryLiteral = 0b_1000_0000;
       Assert.That(binaryLiteral, Is.EqualTo(128));
 
