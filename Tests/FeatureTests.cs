@@ -27,6 +27,12 @@ namespace Tests
         //See https://channel9.msdn.com/Events/Connect/2017/T125 for an explanation of Span<T>
     }
 
+    [Test] public void Span()
+    {
+      //C# 7.2 added new general purpose ways to access memory. 
+      //Classes like Span<T>, Memory<T> and ReadOnlySpan<T> are examples.
+    }
+
     [Test] public void LeadingUnderscoresInNumericLiterals()
     {
       //C# 7 added support for underscores as digit separators, but you couldn't start a numeric literal with an underscore
