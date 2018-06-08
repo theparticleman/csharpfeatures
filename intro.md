@@ -8,6 +8,8 @@
   * https://utahsc.herokuapp.com/
 * Presentation at https://github.com/theparticleman/csharpfeatures
 
+## Microsoft has moved from a few big features in each new version of C# (e.g. generics, LINQ, async/await) to more small features. C# 7, 7.1, 7.2, and 7.3 are examples of that.
+
 ### A couple useful links
 * https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-7-3
 * https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-7-2
@@ -15,8 +17,6 @@
 * https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-7
 * https://blogs.msdn.microsoft.com/dotnet/2016/08/24/whats-new-in-csharp-7-0/
 * https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-version-history
-  * Microsoft has moved from a few big features in each new version of C# (e.g. generics, LINQ, async/await) to more small features. C# 7, 7.1 and 7.2 are examples of that.
-
 
 
 ### C# 7 is supported in Visual Studio 2017+ and .NET Core 1.0+
