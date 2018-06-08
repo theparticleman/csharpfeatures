@@ -321,6 +321,7 @@ namespace Tests
         Assert.That(tuple1, Is.EqualTo(tuple2));
         Assert.That(tuple1.Equals(tuple2), Is.True);
         // Assert.That(tuple1 == tuple2, Is.True); //The == operator isn't defined for new tuples :(
+        // But don't dispair! This is planned for C# 8!
       }
 
       [Test] public void Deconstructors()
