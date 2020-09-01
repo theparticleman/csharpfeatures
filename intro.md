@@ -2,10 +2,10 @@
 ## Jonathan Turner
 
 * jonathan.m.turner@gmail.com
+  * https://www.linkedin.com/in/jonathan-m-turner/
 * Emmersion
 * Utah Software Craftsmanship meetup
   * http://utahsc.org
-  * https://utahsc.herokuapp.com/
 * Presentation at https://github.com/theparticleman/csharpfeatures
 
 ## Microsoft has moved from a few big features in each new version of C# (e.g. generics, LINQ, async/await) to more small features. C# 7, 7.1, 7.2, and 7.3 are examples of that.
