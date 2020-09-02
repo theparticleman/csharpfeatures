@@ -61,6 +61,14 @@ namespace Tests
                 //One example is named fields.
                 var namedFieldTuple = (stringVal: "foo", intVal: 42);
                 Assert.That(namedFieldTuple.stringVal, Is.EqualTo("foo"));
+
+                //You can also use a deconstructor (not destructor)
+                //to get the values back out of a tuple.
+                //We'll talk more about this later.
+                var tuple = ("foo", 42);
+                var (stringVal, intVal) = tuple;
+
+                Assert.That(stringVal, Is.EqualTo("foo"));
             }
 
             [Test] public void PatternMatching()
@@ -100,6 +108,24 @@ namespace Tests
             }
         }
         
+        [Test] public void StaticLocalFunctions()
+        {
+            var x = 5;
+            NonStaticLocalFunction();
+            StaticLocalFunction();
+            Assert.That(x, Is.EqualTo(23));
+
+            void NonStaticLocalFunction()
+            {
+                x = 23;
+            }
+
+            static void StaticLocalFunction()
+            {
+                //This won't work because this method is static.
+                // x = 75;
+            }
+        }
         class DefaultInterfaceMembers
         {
             [Test] public void DefaultInterfaceMembersTest()
@@ -123,24 +149,6 @@ namespace Tests
         {
 
         }
-
-        [Test] public void StaticLocalFunctions()
-        {
-            var x = 5;
-            NonStaticLocalFunction();
-
-
-            void NonStaticLocalFunction()
-            {
-                x = 23;
-            }
-
-            static void StaticLocalFunction()
-            {
-                x = 23;
-            }
-        }
-
 
         class PatternMatching
         {
@@ -202,7 +210,34 @@ namespace Tests
 
             [Test] public void PropertyPatterns()
             {
+                //Let's say you have some object and want to get some answer
+                //based on several possible values of that object's properties.
+                var house = new House
+                {
+                    State = "UT",
+                    GarageCarCount = 2,
+                    BedroomCount = 4,
+                    BathroomCount = 2,
+                    EthernetEverywhere = true
+                };
 
+                var houseIsAcceptable = IsHouseAcceptable(house);
+                Assert.That(houseIsAcceptable, Is.True);
+
+                //You could do an if-else construct to do this.
+                //Or you could use a property pattern.
+                bool IsHouseAcceptable(House house) =>
+                    house switch
+                    {
+
+                        { State: "VT" } => false,
+                        { GarageCarCount: 1 } => false,
+                        { BedroomCount: 1 } => false,
+                        { BedroomCount: 2 } => false,
+                        { BedroomCount: 3 } => false,
+                        { EthernetEverywhere: false } => false,
+                        _ => true
+                    };
             }
 
             [Test] public void TuplePatterns()
@@ -216,7 +251,7 @@ namespace Tests
                 var newResult = GetNewResult("spock", "rock");
                 Assert.That(newResult, Is.EqualTo("spock vaporizes rock"));
 
-                //You could a solution to a problem like this using a series of if-else statements.
+                //You could implement a solution to a problem like this using a series of if-else statements.
                 //This was briefest if-else solution I could think of.
                 string GetOldResult(string player1, string player2)
                 {
@@ -251,6 +286,7 @@ namespace Tests
                         ("paper", "rock") => "paper covers rock",
                         ("scissors", "paper") => "scissors cut paper",
                         ("scissors", "lizard") => "scissors decapitate lizard",
+                        ("kirk", _) => "This isn't rock paper scissor lizard kirk. Player 1 cheated.",
                         _ => "player 1 did not win"
                     };
                 }
@@ -258,9 +294,64 @@ namespace Tests
 
             [Test] public void PositionalPatterns()
             {
-                
+                var house = new House
+                {
+                    State = "WY",
+                    Price = 175_000,
+                    SquareFootage = 2150,
+                    EthernetEverywhere = true,
+                    BedroomCount = 4,
+                    BathroomCount = 2
+                };
+
+                var houseIsAcceptable = IsHouseAcceptable(house);
+                Assert.That(houseIsAcceptable, Is.True);
+
+                bool IsHouseAcceptable(House house)
+                {
+                    return house switch
+                    {
+                        //The patterns are evaluated in order.
+                        //The first one that matches is what is returned.
+                        var (price, _, _, _, _, _, _) when price > 200_000 => false,
+                        var (_, squareFootage, _, _, _, _, _) when squareFootage < 2000 => false,
+                        var (_, _, _, _, _, ethernetEverywhere, _) when !ethernetEverywhere => false,
+                        var (_, _, _, _, _, _, state) when state == "VT" => false,
+                        var (_, _, _, bedroomCount, bathroomCount, _, state) when
+                            state == "MT" &&
+                            bedroomCount >= 5 &&
+                            bathroomCount >= 3 => true,
+                        //You can mix and match some of the different types of pattern matching,
+                        //like adding a property pattern here
+                        { State: "NV" } => false,
+                        _ => true
+                    };
+                }
             }
 
+            class House
+            {
+                public decimal Price { get; set; }
+                public double SquareFootage  { get; set; }
+                public int GarageCarCount { get; set; }
+                public int BedroomCount { get; set; }
+                public int BathroomCount { get; set; }
+                public bool EthernetEverywhere { get; set; }
+                public string State { get; set; }
+
+                public void Deconstruct(out decimal price, out double squareFootage,
+                    out int garageCarCount, out int bedroomCount, out int bathroomCount,
+                    out bool ethernetEverywhere, out string state)
+                {
+                    price = Price;
+                    squareFootage = SquareFootage;
+                    garageCarCount = GarageCarCount;
+                    bedroomCount = BedroomCount;
+                    bathroomCount = BathroomCount;
+                    ethernetEverywhere = EthernetEverywhere;
+                    state = State;
+                }
+            }
         }
     }
 }
