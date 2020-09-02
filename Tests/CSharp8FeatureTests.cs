@@ -353,5 +353,78 @@ namespace Tests
                 }
             }
         }
+
+        class NonnullableReferenceTypes
+        {
+            //This is called a nullable annotation context.
+            #nullable enable
+            class Character
+            {
+                //You can turn on nullable reference types for a class or a whole file.
+                //You can also turn on nullable reference types for an entire project by adding
+                //<Nullable>enable</Nullable>
+                //to your project file. But for existing code the number of warnings
+                //might be too large to deal with all at once.
+
+                public int HitPoints { get; set; }
+                public string Name { get; set; }
+                //If you want to show that a variable can be null, use the ? syntax.
+                public string? Class { get; set; }
+
+                //If you want nullable reference types for the entire file,
+                //don't add #nullable restore.
+            }
+            #nullable restore
+
+            [Test] public void ClassWithNonnullableProperties()
+            {
+                var dwarf = new Character();
+                Assert.That(dwarf.Name, Is.Null);
+                //The non-nullability is only reported as a warning by the compiler.
+                //You could turn on warnings as errors if you want compilation to fail.
+
+                #nullable enable
+                string? wizardName = "Gandalf";
+                var wizard = new Character
+                {
+                    //The compiler knows that wizardName cannot
+                    //be null here, so it allows the assignment.
+                    //If the variable might be null here, the
+                    //compiler won't allow the assignment.
+                    Name = wizardName
+                };
+                #nullable restore
+            }
+
+            #nullable enable
+            [Test] public void NullForgivingOperator()
+            {
+                Character? character = Find("Legolas");
+
+                if (IsValid(character))
+                {
+                    //The compiler doesn't know that we've already done a null check on character.
+                    //We can add the null forgiving operator (the postfix ! operator) to
+                    //tell the compiler not to give us a warning in this case.
+                    Assert.That(character!.Name, Is.EqualTo("Legolas"));
+                }
+                else
+                {
+                    Assert.Fail("Character should be valid");
+                }
+
+                bool IsValid(Character? character) =>
+                    character != null && !string.IsNullOrEmpty(character.Name);
+
+                Character? Find(string name) =>
+                    name switch
+                    {
+                        "Legolas" => new Character { Name = name, HitPoints = 80 },
+                        "Gimli" => new Character { Name = name, HitPoints = 100 },
+                        _ => null
+                    };
+            }
+            #nullable restore
+        }
     }
 }
