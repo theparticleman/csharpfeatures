@@ -1,5 +1,6 @@
 
 using System;
+using System.IO;
 using System.Linq;
 using NUnit.Framework;
 
@@ -504,7 +505,25 @@ namespace Tests
 
         [Test] public void UsingDeclarations()
         {
+            //A using declaration is just like a normal using statement
+            //but you don't have to indent as far.
+            var filename = Path.GetTempFileName();
+            WriteToFile(filename);
+            //StreamWriter will open the file for exclusive write,
+            //so this ReadAllText call would fail if the
+            //sw StreamWriter did not close the file.
+            var fileText = File.ReadAllText(filename);
+            File.Delete(filename);
 
+            Assert.That(fileText, Is.EqualTo("This is a test"));
+
+            void WriteToFile(string filename)
+            {
+                using var sw = new StreamWriter(filename);
+                sw.Write("This is a test");
+                //When the sw variable goes out of scope
+                //its Dispose method will get called.
+            }
         }
 
         [Test] public void StaticLocalFunctions()
