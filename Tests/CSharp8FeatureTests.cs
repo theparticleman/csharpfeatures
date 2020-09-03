@@ -113,6 +113,23 @@ namespace Tests
         {
             //Indices and ranges work with arrays, strings, Span<T>, and ReadOnlySpan<T>.
 
+            readonly string[] testArray =
+            {
+                "Always",
+                "reward",
+                "the",
+                "people",
+                "and",
+                "blame",
+                "the",
+                "system",
+                "not",
+                "the",
+                "other",
+                "way",
+                "around"
+            };
+
             [Test] public void Indices()
             {
                 //What if you want to get the last element of an array?
@@ -179,23 +196,6 @@ namespace Tests
                 var range = ..4;
                 Assert.That(range.GetType(), Is.EqualTo(typeof(Range)));
             }
-
-            readonly string[] testArray =
-            {
-                "Always",
-                "reward",
-                "the",
-                "people",
-                "and",
-                "blame",
-                "the",
-                "system",
-                "not",
-                "the",
-                "other",
-                "way",
-                "around"
-            };
         }
 
         class NonnullableReferenceTypes
