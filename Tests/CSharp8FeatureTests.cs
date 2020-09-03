@@ -351,7 +351,6 @@ namespace Tests
                 bool IsHouseAcceptable(House house) =>
                     house switch
                     {
-
                         { State: "VT" } => false,
                         { GarageCarCount: 1 } => false,
                         { BedroomCount: 1 } => false,
