@@ -510,5 +510,29 @@ namespace Tests
                 "around"
             };
         }
+
+        [Test] public void NullCoalescingAssignment()
+        {
+            //Suppose you have a variable that might be null and you want to assign it a value if it is null.
+
+            //You could do it old school like this:
+            string myVariable = null;
+            if (myVariable == null)
+            {
+                myVariable = "not null";
+            }
+            Assert.That(myVariable, Is.Not.Null);
+
+            //You could do it a little cooler using the null coalescing operator.
+            //This operator has been in C# since 2.0.
+            myVariable = null;
+            myVariable = myVariable ?? "not null";
+            Assert.That(myVariable, Is.Not.Null);
+
+            //But that's a little verbose. Now you can make it even more concise.
+            myVariable = null;
+            myVariable ??= "not null";
+            Assert.That(myVariable, Is.Not.Null);
+        }
     }
 }
