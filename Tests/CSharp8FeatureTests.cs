@@ -1,5 +1,6 @@
 
 using System;
+using System.Linq;
 using NUnit.Framework;
 
 namespace Tests
@@ -425,6 +426,89 @@ namespace Tests
                     };
             }
             #nullable restore
+        }
+
+        class IndicesAndRanges
+        {
+            //Indices and ranges work with arrays, strings, Span<T>, and ReadOnlySpan<T>.
+
+            [Test] public void Indices()
+            {
+                //What if you want to get the last element of an array?
+                var lastElementTheHardWay = testArray[testArray.Length - 1];
+                Assert.That(lastElementTheHardWay, Is.EqualTo("around"));
+
+                var lastElementTheEasyWay = testArray[^1];
+                Assert.That(lastElementTheEasyWay, Is.EqualTo("around"));
+
+                //You can use a variable to index from the end.
+                var howManyElementsFromTheEnd = 4;
+                var someElementGivenNumberOfElementsFromTheEnd = testArray[^howManyElementsFromTheEnd];
+                Assert.That(someElementGivenNumberOfElementsFromTheEnd, Is.EqualTo("the"));
+
+                //You can use a calculation to index from the end.
+                var anElementBasedOnSomeCalculation = testArray[^(4 * 2 - 3)]; //This won't work without the parens.
+                Assert.That(anElementBasedOnSomeCalculation, Is.EqualTo("not"));
+
+                //^0 is the same as array.Length.
+                Assert.Throws<IndexOutOfRangeException>(() => { var x = testArray[^0]; });
+            }
+
+            [Test] public void Ranges()
+            {
+                //What if you want to get all the elements in an array except the first two and the last two?
+
+                //You could do something like this:
+                var arrayMinusFirstAndLastTwo = testArray.Skip(2).Take(testArray.Length - 4).ToArray();
+                Assert.That(testArray.Length, Is.EqualTo(13));
+                Assert.That(arrayMinusFirstAndLastTwo.Length, Is.EqualTo(9));
+                Assert.That(arrayMinusFirstAndLastTwo[0], Is.EqualTo("the"));
+                Assert.That(arrayMinusFirstAndLastTwo.Last(), Is.EqualTo("other"));
+
+                //With ranges you could be much more concise like this:
+                var arrayMinusFirstAndLastTwoButBetter = testArray[2..^2];
+                Assert.That(arrayMinusFirstAndLastTwoButBetter.Length, Is.EqualTo(9));
+                Assert.That(arrayMinusFirstAndLastTwoButBetter[0], Is.EqualTo("the"));
+                Assert.That(arrayMinusFirstAndLastTwoButBetter[^1], Is.EqualTo("other"));
+
+                Assert.That(arrayMinusFirstAndLastTwo, Is.EqualTo(arrayMinusFirstAndLastTwoButBetter));
+            }
+
+            [Test] public void SomeMoreRangeExamples()
+            {
+                //If you want to do a range that includes "from the beginning"
+                //or "to end" you can totally do that too.
+
+                var lastTwoElements = testArray[^2..];
+                Assert.That(lastTwoElements, Is.EqualTo(new[] { "way", "around" }));
+
+                var firstFourElements = testArray[..4];
+                Assert.That(firstFourElements, Is.EqualTo(new[] { "Always", "reward", "the", "people" }));
+            }
+
+            [Test] public void RangesAreJustVariables()
+            {
+                //Ranges are just variables that easy to declare using the range operator (..).
+                var range = ..4;
+                Assert.That(range.GetType(), Is.EqualTo(typeof(Range)));
+            }
+
+            readonly string[] testArray =
+            {
+                "Always",
+                "reward",
+                "the",
+                "people",
+                "and",
+                "blame",
+                "the",
+                "system",
+                "not",
+                "the",
+                "other",
+                "way",
+                "around"
+            };
         }
     }
 }
