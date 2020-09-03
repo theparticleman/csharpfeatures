@@ -8,7 +8,9 @@
   * http://utahsc.org
 * Presentation at https://github.com/theparticleman/csharpfeatures
 
-## Microsoft has moved from a few big features in each new version of C# (e.g. generics, LINQ, async/await) to more small features. C# 7, 7.1, 7.2, and 7.3 are examples of that.
+## Microsoft has moved from a few big features in each new version of C# (e.g. generics, LINQ, sync/await) to more small features. C# 7, 7.1, 7.2, and 7.3 are examples of that.
+
+## C# 8 is a bigger release than the individual 7.x releases, but it's still smaller than many releases in the past.
 
 ### A couple useful links
 * https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-8

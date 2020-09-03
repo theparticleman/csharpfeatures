@@ -23,29 +23,6 @@ namespace Tests
                 int Double(int input) => input * 2;
             }
 
-            [Test] public void Discards()
-            {
-                //Sometimes you get a value, but you don't actually care about using it.
-                //Discards are great for these situations.
-                //Sometimes you can use them to get rid of compiler warnings or to
-                //explicitly show that you know you're getting a return value
-                //are you're intentionally choosing not to use it.
-                var _ = MethodThatReturnsSomeValueWeDoNotCareAbout();
-                //According docs.microsoft.com, the discard variable is write-only,
-                //but this test appears to work. ¯\_(ツ)_/¯
-                Assert.That(_, Is.Not.Null);
-
-                //You can use discards in other places too, such as tuple deconstruction.
-                var tuple = ("foo", 42);
-                var (_, intVal) = tuple;
-                Assert.That(intVal, Is.EqualTo(42));
-
-                //Discards also work for out parameters whose values aren't used.
-                Assert.That(int.TryParse("42", out var _), Is.True);
-
-                int MethodThatReturnsSomeValueWeDoNotCareAbout() => 173;
-            }
-
             [Test] public void ValueTuples()
             {
                 //System.Tuple has existed since .NET Framework 4.0.
@@ -72,6 +49,29 @@ namespace Tests
                 Assert.That(stringVal, Is.EqualTo("foo"));
             }
 
+            [Test] public void Discards()
+            {
+                //Sometimes you get a value, but you don't actually care about using it.
+                //Discards are great for these situations.
+                //Sometimes you can use them to get rid of compiler warnings or to
+                //explicitly show that you know you're getting a return value
+                //you're intentionally choosing not to use it.
+                var _ = MethodThatReturnsSomeValueWeDoNotCareAbout();
+                //According docs.microsoft.com, the discard variable is write-only,
+                //but this test appears to work. ¯\_(ツ)_/¯
+                Assert.That(_, Is.EqualTo(173));
+
+                //You can use discards in other places too, such as tuple deconstruction.
+                var tuple = ("foo", 42);
+                var (_, intVal) = tuple;
+                Assert.That(intVal, Is.EqualTo(42));
+
+                //Discards also work for out parameters whose values aren't used.
+                Assert.That(int.TryParse("42", out var _), Is.True);
+
+                int MethodThatReturnsSomeValueWeDoNotCareAbout() => 173;
+            }
+
             [Test] public void PatternMatching()
             {
                 //C# 7 introduced the first pattern matching functionality in C#.
@@ -81,7 +81,7 @@ namespace Tests
                 var someValue = GetSomeRandomValue();
 
                 //This is an example a switch pattern match.
-                switch(someValue)
+                switch (someValue)
                 {
                     case null: //the null pattern
                         answer = "the value was null";
@@ -108,47 +108,168 @@ namespace Tests
                 object GetSomeRandomValue() => null;
             }
         }
-        
-        [Test] public void StaticLocalFunctions()
+
+        class IndicesAndRanges
         {
-            var x = 5;
-            NonStaticLocalFunction();
-            StaticLocalFunction();
-            Assert.That(x, Is.EqualTo(23));
+            //Indices and ranges work with arrays, strings, Span<T>, and ReadOnlySpan<T>.
 
-            void NonStaticLocalFunction()
+            [Test] public void Indices()
             {
-                x = 23;
+                //What if you want to get the last element of an array?
+                var lastElementTheHardWay = testArray[testArray.Length - 1];
+                Assert.That(lastElementTheHardWay, Is.EqualTo("around"));
+
+                //You could also do it like this:
+                var lastElementUsingLinq = testArray.Last();
+                Assert.That(lastElementUsingLinq, Is.EqualTo("around"));
+
+                //But with C# 8 you can use this syntax.
+                var lastElementTheEasyWay = testArray[^1];
+                Assert.That(lastElementTheEasyWay, Is.EqualTo("around"));
+
+                //You can use a variable to index from the end.
+                var howManyElementsFromTheEnd = 4;
+                var someElementGivenNumberOfElementsFromTheEnd = testArray[^howManyElementsFromTheEnd];
+                Assert.That(someElementGivenNumberOfElementsFromTheEnd, Is.EqualTo("the"));
+
+                //You can use a calculation to index from the end.
+                var anElementBasedOnSomeCalculation = testArray[^(4 * 2 - 3)]; //This won't work without the parens.
+                Assert.That(anElementBasedOnSomeCalculation, Is.EqualTo("not"));
+
+                //^0 is the same as array.Length.
+                Assert.Throws<IndexOutOfRangeException>(() => { var x = testArray[^0]; });
             }
 
-            static void StaticLocalFunction()
+            [Test] public void Ranges()
             {
-                //This won't work because this method is static.
-                // x = 75;
+                //What if you want to get all the elements in an array except
+                //the first two and the last two?
+
+                //You could do something like this:
+                var arrayMinusFirstAndLastTwo = testArray.Skip(2).Take(testArray.Length - 4).ToArray();
+                Assert.That(testArray.Length, Is.EqualTo(13));
+                Assert.That(arrayMinusFirstAndLastTwo.Length, Is.EqualTo(9));
+                Assert.That(arrayMinusFirstAndLastTwo[0], Is.EqualTo("the"));
+                Assert.That(arrayMinusFirstAndLastTwo.Last(), Is.EqualTo("other"));
+
+                //With ranges you could be much more concise like this:
+                var arrayMinusFirstAndLastTwoButBetter = testArray[2..^2];
+                Assert.That(arrayMinusFirstAndLastTwoButBetter.Length, Is.EqualTo(9));
+                Assert.That(arrayMinusFirstAndLastTwoButBetter[0], Is.EqualTo("the"));
+                Assert.That(arrayMinusFirstAndLastTwoButBetter[^1], Is.EqualTo("other"));
+
+                Assert.That(arrayMinusFirstAndLastTwo, Is.EqualTo(arrayMinusFirstAndLastTwoButBetter));
             }
+
+            [Test] public void SomeMoreRangeExamples()
+            {
+                //If you want to do a range that includes "from the beginning"
+                //or "to end" you can totally do that too.
+
+                var firstFourElements = testArray[..4];
+                Assert.That(firstFourElements, Is.EqualTo(new[] { "Always", "reward", "the", "people" }));
+
+                var lastTwoElements = testArray[^2..];
+                Assert.That(lastTwoElements, Is.EqualTo(new[] { "way", "around" }));
+            }
+
+            [Test] public void RangesAreJustVariables()
+            {
+                //Ranges are just variables that easy to declare using the range operator (..).
+                var range = ..4;
+                Assert.That(range.GetType(), Is.EqualTo(typeof(Range)));
+            }
+
+            readonly string[] testArray =
+            {
+                "Always",
+                "reward",
+                "the",
+                "people",
+                "and",
+                "blame",
+                "the",
+                "system",
+                "not",
+                "the",
+                "other",
+                "way",
+                "around"
+            };
         }
-        class DefaultInterfaceMembers
+
+        class NonnullableReferenceTypes
         {
-            [Test] public void DefaultInterfaceMembersTest()
+            //This is called a nullable annotation context.
+            #nullable enable
+            class Character
             {
-                //This probably isn't a feature you want to use heavily.
-                //But it could be useful for library developers.
+                //You can turn on nullable reference types for a class or a whole file.
+                //You can also turn on nullable reference types for an entire project by adding
+                //<Nullable>enable</Nullable>
+                //to your project file. But for existing code the number of warnings
+                //might be too large to deal with all at once.
+
+                public int HitPoints { get; set; }
+                public string Name { get; set; }
+                //If you want to show that a variable can be null, use the ? syntax.
+                public string? Class { get; set; }
+
+                //If you want nullable reference types for the entire file,
+                //don't add #nullable restore.
             }
+            #nullable restore
 
-            interface ExampleInterface
+            [Test] public void ClassWithNonnullableProperties()
             {
-                string Method1();
+                var dwarf = new Character { Name = "Gimli" };
+                dwarf.Name = null;
+                Assert.That(dwarf.Name, Is.Null);
+                //The non-nullability is only reported as a warning by the compiler.
+                //You could turn on warnings as errors if you want compilation to fail.
 
-                string Method2()
+                #nullable enable
+                string? wizardName = "Gandalf";
+                var wizard = new Character
                 {
-                    return Method1() + "another string";
-                }
+                    //The compiler knows that wizardName cannot
+                    //be null here, so it allows the assignment.
+                    //If the variable might be null here, the
+                    //compiler won't allow the assignment.
+                    Name = wizardName
+                };
+                #nullable restore
             }
-        }
 
-        [Test] public void UsingDeclarations()
-        {
+            #nullable enable
+            [Test] public void NullForgivingOperator()
+            {
+                Character? character = Find("Legolas");
 
+                if (IsValid(character))
+                {
+                    //The compiler doesn't know that we've already done a null check on character.
+                    //We can add the null forgiving operator (the postfix ! operator) to
+                    //tell the compiler not to give us a warning in this case.
+                    Assert.That(character!.Name, Is.EqualTo("Legolas"));
+                }
+                else
+                {
+                    Assert.Fail("Character should be valid");
+                }
+
+                bool IsValid(Character? character) =>
+                    character != null && !string.IsNullOrEmpty(character.Name);
+
+                Character? Find(string name) =>
+                    name switch
+                    {
+                        "Legolas" => new Character { Name = name, HitPoints = 80 },
+                        "Gimli" => new Character { Name = name, HitPoints = 100 },
+                        _ => null
+                    };
+            }
+            #nullable restore
         }
 
         class PatternMatching
@@ -160,12 +281,12 @@ namespace Tests
                 //This example uses integers, but other examples could include
                 //strings and enums.
                 var intVal = 42;
-                var oldAnswer = GetOldAnswer(intVal);
-                var newAnswer = GetNewAnswer(intVal);
-                Assert.That(newAnswer, Is.EqualTo(oldAnswer));
+                var switchAnswer = GetAnswerUsingNormalSwitch(intVal);
+                var patternMatchingAnswer = GetAnswerUsingPatternMatching(intVal);
+                Assert.That(patternMatchingAnswer, Is.EqualTo(switchAnswer));
 
                 //You could implement a solution using a normal switch statement.
-                string GetOldAnswer(int input)
+                string GetAnswerUsingNormalSwitch(int input)
                 {
                     switch(input)
                     {
@@ -193,7 +314,7 @@ namespace Tests
                 }
 
                 //Or you could implement a less verbose solution using a switch expression.
-                string GetNewAnswer(int input) =>
+                string GetAnswerUsingPatternMatching(int input) =>
                     input switch
                     {
                         0 => "zero",
@@ -270,7 +391,7 @@ namespace Tests
                 }
 
                 //But in C# 8 you can use a tuple pattern to make the solution even more concise.
-                //If obviously depends on opinion and familiarity, but I think this solution is more readable.
+                //It obviously depends on opinion and familiarity, but I think this solution is more readable.
                 //It may also just be a reflection on my typing skills, but this solution
                 //took about half as long to type.
                 string GetNewResult(string player1, string player2)
@@ -295,6 +416,8 @@ namespace Tests
 
             [Test] public void PositionalPatterns()
             {
+                //This type of pattern matching depends on having a deconstructor.
+
                 var house = new House
                 {
                     State = "WY",
@@ -355,162 +478,6 @@ namespace Tests
             }
         }
 
-        class NonnullableReferenceTypes
-        {
-            //This is called a nullable annotation context.
-            #nullable enable
-            class Character
-            {
-                //You can turn on nullable reference types for a class or a whole file.
-                //You can also turn on nullable reference types for an entire project by adding
-                //<Nullable>enable</Nullable>
-                //to your project file. But for existing code the number of warnings
-                //might be too large to deal with all at once.
-
-                public int HitPoints { get; set; }
-                public string Name { get; set; }
-                //If you want to show that a variable can be null, use the ? syntax.
-                public string? Class { get; set; }
-
-                //If you want nullable reference types for the entire file,
-                //don't add #nullable restore.
-            }
-            #nullable restore
-
-            [Test] public void ClassWithNonnullableProperties()
-            {
-                var dwarf = new Character();
-                Assert.That(dwarf.Name, Is.Null);
-                //The non-nullability is only reported as a warning by the compiler.
-                //You could turn on warnings as errors if you want compilation to fail.
-
-                #nullable enable
-                string? wizardName = "Gandalf";
-                var wizard = new Character
-                {
-                    //The compiler knows that wizardName cannot
-                    //be null here, so it allows the assignment.
-                    //If the variable might be null here, the
-                    //compiler won't allow the assignment.
-                    Name = wizardName
-                };
-                #nullable restore
-            }
-
-            #nullable enable
-            [Test] public void NullForgivingOperator()
-            {
-                Character? character = Find("Legolas");
-
-                if (IsValid(character))
-                {
-                    //The compiler doesn't know that we've already done a null check on character.
-                    //We can add the null forgiving operator (the postfix ! operator) to
-                    //tell the compiler not to give us a warning in this case.
-                    Assert.That(character!.Name, Is.EqualTo("Legolas"));
-                }
-                else
-                {
-                    Assert.Fail("Character should be valid");
-                }
-
-                bool IsValid(Character? character) =>
-                    character != null && !string.IsNullOrEmpty(character.Name);
-
-                Character? Find(string name) =>
-                    name switch
-                    {
-                        "Legolas" => new Character { Name = name, HitPoints = 80 },
-                        "Gimli" => new Character { Name = name, HitPoints = 100 },
-                        _ => null
-                    };
-            }
-            #nullable restore
-        }
-
-        class IndicesAndRanges
-        {
-            //Indices and ranges work with arrays, strings, Span<T>, and ReadOnlySpan<T>.
-
-            [Test] public void Indices()
-            {
-                //What if you want to get the last element of an array?
-                var lastElementTheHardWay = testArray[testArray.Length - 1];
-                Assert.That(lastElementTheHardWay, Is.EqualTo("around"));
-
-                var lastElementTheEasyWay = testArray[^1];
-                Assert.That(lastElementTheEasyWay, Is.EqualTo("around"));
-
-                //You can use a variable to index from the end.
-                var howManyElementsFromTheEnd = 4;
-                var someElementGivenNumberOfElementsFromTheEnd = testArray[^howManyElementsFromTheEnd];
-                Assert.That(someElementGivenNumberOfElementsFromTheEnd, Is.EqualTo("the"));
-
-                //You can use a calculation to index from the end.
-                var anElementBasedOnSomeCalculation = testArray[^(4 * 2 - 3)]; //This won't work without the parens.
-                Assert.That(anElementBasedOnSomeCalculation, Is.EqualTo("not"));
-
-                //^0 is the same as array.Length.
-                Assert.Throws<IndexOutOfRangeException>(() => { var x = testArray[^0]; });
-            }
-
-            [Test] public void Ranges()
-            {
-                //What if you want to get all the elements in an array except the first two and the last two?
-
-                //You could do something like this:
-                var arrayMinusFirstAndLastTwo = testArray.Skip(2).Take(testArray.Length - 4).ToArray();
-                Assert.That(testArray.Length, Is.EqualTo(13));
-                Assert.That(arrayMinusFirstAndLastTwo.Length, Is.EqualTo(9));
-                Assert.That(arrayMinusFirstAndLastTwo[0], Is.EqualTo("the"));
-                Assert.That(arrayMinusFirstAndLastTwo.Last(), Is.EqualTo("other"));
-
-                //With ranges you could be much more concise like this:
-                var arrayMinusFirstAndLastTwoButBetter = testArray[2..^2];
-                Assert.That(arrayMinusFirstAndLastTwoButBetter.Length, Is.EqualTo(9));
-                Assert.That(arrayMinusFirstAndLastTwoButBetter[0], Is.EqualTo("the"));
-                Assert.That(arrayMinusFirstAndLastTwoButBetter[^1], Is.EqualTo("other"));
-
-                Assert.That(arrayMinusFirstAndLastTwo, Is.EqualTo(arrayMinusFirstAndLastTwoButBetter));
-            }
-
-            [Test] public void SomeMoreRangeExamples()
-            {
-                //If you want to do a range that includes "from the beginning"
-                //or "to end" you can totally do that too.
-
-                var lastTwoElements = testArray[^2..];
-                Assert.That(lastTwoElements, Is.EqualTo(new[] { "way", "around" }));
-
-                var firstFourElements = testArray[..4];
-                Assert.That(firstFourElements, Is.EqualTo(new[] { "Always", "reward", "the", "people" }));
-            }
-
-            [Test] public void RangesAreJustVariables()
-            {
-                //Ranges are just variables that easy to declare using the range operator (..).
-                var range = ..4;
-                Assert.That(range.GetType(), Is.EqualTo(typeof(Range)));
-            }
-
-            readonly string[] testArray =
-            {
-                "Always",
-                "reward",
-                "the",
-                "people",
-                "and",
-                "blame",
-                "the",
-                "system",
-                "not",
-                "the",
-                "other",
-                "way",
-                "around"
-            };
-        }
-
         [Test] public void NullCoalescingAssignment()
         {
             //Suppose you have a variable that might be null and you want to assign it a value if it is null.
@@ -533,6 +500,49 @@ namespace Tests
             myVariable = null;
             myVariable ??= "not null";
             Assert.That(myVariable, Is.Not.Null);
+        }
+
+        [Test] public void UsingDeclarations()
+        {
+
+        }
+
+        [Test] public void StaticLocalFunctions()
+        {
+            var x = 5;
+            NonStaticLocalFunction();
+            StaticLocalFunction();
+            Assert.That(x, Is.EqualTo(23));
+
+            void NonStaticLocalFunction()
+            {
+                x = 23;
+            }
+
+            static void StaticLocalFunction()
+            {
+                //This won't work because this method is static.
+                // x = 75;
+            }
+        }
+
+        class DefaultInterfaceMembers
+        {
+            [Test] public void DefaultInterfaceMembersTest()
+            {
+                //This probably isn't a feature you want to use heavily.
+                //But it could be useful for library developers.
+            }
+
+            interface ExampleInterface
+            {
+                string Method1();
+
+                string Method2()
+                {
+                    return Method1() + "another string";
+                }
+            }
         }
     }
 }
